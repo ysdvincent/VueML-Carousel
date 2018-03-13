@@ -1,8 +1,8 @@
 <template>
-  <div class="VueCarousel">
-    <div class="VueCarousel-wrapper" ref="VueCarousel-wrapper">
+  <div class="VueCarousel-ThumbNav">
+    <div :class="`VueCarousel-ThumbNav-wrapper ${thumbnailClass}`" ref="VueCarousel-ThumbNav-wrapper">
       <div
-        class="VueCarousel-inner"
+        class="VueCarousel-ThumbNav-inner"
         v-bind:style="`
           transform: translate3d(${currentOffset}px, 0, 0);
           transition: ${!dragging ? transitionStyle : 'none'};
@@ -12,9 +12,7 @@
           padding-right: ${padding}px;
         `"
       >
-        <slot name="default" v-if="!multiRow"></slot>
-        <multi-row-slide v-if="multiRow" v-for="slide in multiRowData" :slide="slide"></multi-row-slide>
-
+        <slot></slot>
       </div>
     </div>
     <pagination
@@ -28,15 +26,6 @@
       :prevLabel="navigationPrevLabel"
       @navigationclick="handleNavigation"
     ></navigation>
-    <thumbnail-nav
-      v-if="thumbNavEnabled"
-      :slides="$slots"
-      :perPage="4"
-      :navigationEnabled="true"
-      :paginationEnabled="false"
-      :scrollPerPage="false"
-      ref="thumbNav"
-    ></thumbnail-nav>
   </div>
 </template>
 
@@ -46,26 +35,23 @@ import debounce from "./utils/debounce";
 import Navigation from "./Navigation.vue";
 import Pagination from "./Pagination.vue";
 import Slide from "./Slide.vue";
-import MultiRowSlide from "./MultiRowSlide.vue";
-import ThumbnailNav from "./ThumbnailNav.vue";
 
 export default {
-  name: "carousel",
+  name: "thumbnail-nav",
   beforeUpdate() {
     this.computeCarouselWidth();
   },
   components: {
     Navigation,
     Pagination,
-    Slide,
-    MultiRowSlide,
-    ThumbnailNav
+    Slide
   },
   data() {
     return {
       browserWidth: null,
       carouselWidth: null,
       currentPage: 0,
+      dragged: false,
       dragging: false,
       dragMomentum: 0,
       dragOffset: 0,
@@ -75,14 +61,15 @@ export default {
       offset: 0,
       refreshRate: 16,
       slideCount: 0,
-      perPageThumb: 4,
-      thumbNav: null,
-      multiRow: false,
-      multiRowData: ''
+      isThumbNav: true
     };
   },
   mixins: [autoplay],
   props: {
+    thumbnailClass: {
+      type: String,
+      default: ''
+    },
     /**
      * Slide transition easing
      * Any valid CSS transition easing accepted
@@ -227,22 +214,23 @@ export default {
       type: Number,
       default: 0
     },
-    /**
-     *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
-     */
+    /*
+       *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
+       */
     spacePadding: {
       type: Number,
       default: 0
     },
-
-    thumbNavEnabled: {
-      type: Boolean,
-      default: false
-    },
-
-    slideRows: {
-      type: Number,
-      default: 1
+    /**
+     *
+     */
+    slides: {
+      type: Object,
+      default: () => {
+        return {
+          default: []
+        };
+      }
     }
   },
 
@@ -373,7 +361,7 @@ export default {
         this.goToPage(this.getNextPage(), "navigation");
       }
 
-      this.updateThumbNav();
+      this.updateParentPage(null);
     },
     /**
      * A mutation observer is used to detect changes to the containing node
@@ -397,9 +385,6 @@ export default {
         }
       }
     },
-    handleNavigation(direction) {
-      this.$emit("navigationclick", direction);
-    },
     /**
      * Stop listening to mutation changes
      */
@@ -407,6 +392,9 @@ export default {
       if (this.mutationObserver) {
         this.mutationObserver.disconnect();
       }
+    },
+    handleNavigation(direction) {
+      this.$emit("thumb-navigation-click", direction);
     },
     /**
      * Get the current browser viewport width
@@ -429,13 +417,13 @@ export default {
      * @return {Number} The number of slides
      */
     getSlideCount() {
-      const slots = (this.$slots &&
-        this.$slots.default &&
-        this.$slots.default.filter(
-          slot => slot.tag && slot.tag.indexOf("slide") > -1
-        ).length) ||
-      0;
-      this.slideCount = (this.slideRows > 1) ? Math.ceil(slots / this.slideRows): slots;
+      this.slideCount =
+        (this.$slots &&
+          this.$slots.default &&
+          this.$slots.default.filter(
+            slot => slot.tag && slot.tag.indexOf("slide") > -1
+          ).length) ||
+        0;
     },
     /**
      * Set the current page to a specific value
@@ -449,7 +437,17 @@ export default {
           this.maxOffset
         );
         this.currentPage = page;
-        this.$emit("pagechange", this.currentPage);
+        this.$emit("thumb-page-change", this.currentPage);
+      }
+    },
+    /**
+     * Sets the current slide as first element just like drag
+     * @param {Number} slide The slide to navigate to
+     */
+    goToSlide(slide) {
+      const newOffset = slide * this.slideWidth;
+      if(newOffset < this.maxOffset){
+        this.offset = newOffset;
       }
     },
     /**
@@ -490,7 +488,7 @@ export default {
         this.minSwipeDistance !== 0 &&
         Math.abs(deltaX) >= this.minSwipeDistance
       ) {
-        const width = this.scrollPerPage
+        const width = this.thisScrollPerPage
           ? this.slideWidth * this.currentPerPage
           : this.slideWidth;
         this.dragOffset = this.dragOffset + Math.sign(deltaX) * (width / 2);
@@ -541,6 +539,8 @@ export default {
       } else if (nextOffset > this.maxOffset) {
         this.dragOffset = Math.sqrt(this.resistanceCoef * this.dragOffset);
       }
+
+      this.dragged = true;
     },
     onResize() {
       this.computeCarouselWidth();
@@ -561,8 +561,8 @@ export default {
         ) * this.slideWidth;
 
       // & snap the new offset on a slide or page if scrollPerPage
-      const width = this.scrollPerPage
-        ? this.slideWidth * Math.floor(this.currentPerPage)
+      const width = this.thisScrollPerPage
+        ? this.slideWidth * this.currentPerPage
         : this.slideWidth;
       this.offset = width * Math.round(this.offset / width);
 
@@ -574,7 +574,7 @@ export default {
         this.offset / this.slideWidth / this.currentPerPage
       );
 
-      this.updateThumbNav();
+      this.updateParentPage(null);
     },
     /**
      * Re-compute the width of the carousel and its slides
@@ -595,45 +595,25 @@ export default {
         this.offset = Math.max(0, Math.min(this.offset, this.maxOffset));
       }
     },
-    updateThumbNav(slide) {
-      if(this.thumbNavEnabled){
-        if(!slide){
-          slide = Math.round(this.offset / this.slideWidth);
-        }
-        this.thumbNav.goToSlide(slide);
+    itemClicked(clicked) {
+      if(this.dragged === false){
+        const item = this.slides.default.findIndex(o => o.componentInstance._uid === clicked);
+        this.updateParentPage(item);
       }
+
+      this.dragged = false;
     },
-    createRowSlides() {
-      if(this.slideRows > 1){
-        let newSlides = [];
-        let key = 0;
-        let curRow = 1;
-        this.$slots.default.forEach((slide, i) => {
-          if(curRow === 1){
-            // Add new slide
-            newSlides[key] = {
-              innerHTML: slide.elm.innerHTML
-            };
-            curRow++;
-          }
-          else {
-            // Add new row to current slide
-            newSlides[key]['innerHTML'] += slide.elm.innerHTML;
-            curRow++;
-          }
-
-          if(curRow > this.slideRows){
-            key++;
-            curRow = 1;
-          }
-
-        });
-        this.multiRowData = newSlides;
-        this.multiRow = true;
+    updateParentPage(parentPage) {
+      if(parentPage === null){
+        parentPage = Math.round(this.offset / this.slideWidth);
       }
+
+      this.$parent.goToPage(parentPage);
     }
   },
   mounted() {
+    this.$slots = this.slides;
+
     if (!this.$isServer) {
       window.addEventListener(
         "resize",
@@ -642,7 +622,7 @@ export default {
 
       // setup the start event only if touch device or mousedrag activated
       if (this.isTouch || this.mouseDrag) {
-        this.$refs["VueCarousel-wrapper"].addEventListener(
+        this.$refs["VueCarousel-ThumbNav-wrapper"].addEventListener(
           this.isTouch ? "touchstart" : "mousedown",
           this.onStart
         );
@@ -651,40 +631,48 @@ export default {
 
     this.attachMutationObserver();
     this.computeCarouselWidth();
-
-    this.thumbNav = this.$refs.thumbNav;
-
-    if(this.slideRows > 1){
-      this.createRowSlides();
-    }
   },
   beforeDestroy() {
     if (!this.$isServer) {
       this.detachMutationObserver();
       window.removeEventListener("resize", this.getBrowserWidth);
-      this.$refs["VueCarousel-wrapper"].removeEventListener(
+      this.$refs["VueCarousel-ThumbNav-wrapper"].removeEventListener(
         this.isTouch ? "touchstart" : "mousedown",
         this.onStart
       );
+    }
+  },
+  watch: {
+    itemClicked: item => {
+      console.log('clickedItem', item);
     }
   }
 };
 </script>
 
 <style>
-.VueCarousel {
+.VueCarousel-ThumbNav {
   position: relative;
 }
 
-.VueCarousel-wrapper {
+.VueCarousel-ThumbNav-wrapper {
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.VueCarousel-inner {
+.VueCarousel-ThumbNav-inner {
   display: flex;
   flex-direction: row;
   backface-visibility: hidden;
+}
+
+.VueCarousel-ThumbNav .VueCarousel-slide {
+  text-align: center;
+}
+
+.VueCarousel-ThumbNav .VueCarousel-slide img {
+  max-height: 150px;
+  width: auto !important;
 }
 </style>
