@@ -13,8 +13,7 @@
         `"
       >
         <slot name="default" v-if="!multiRow"></slot>
-        <multi-row-slide v-if="multiRow" v-for="slide in multiRowData" :slide="slide"></multi-row-slide>
-
+        <multi-row-slide v-if="multiRow" v-for="(slide, key) in multiRowData" :slide="slide" :key="key"></multi-row-slide>
       </div>
     </div>
     <pagination
