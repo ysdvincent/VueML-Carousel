@@ -446,7 +446,7 @@ export default {
     goToPage(page) {
       if (page >= 0 && page <= this.pageCount) {
         this.offset = Math.min(
-          this.slideWidth * this.currentPerPage * page,
+          Math.floor(this.slideWidth) * Math.floor(this.currentPerPage) * page,
           this.maxOffset
         );
         this.currentPage = page;
