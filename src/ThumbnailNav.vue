@@ -68,7 +68,7 @@ export default {
   props: {
     thumbnailClass: {
       type: String,
-      default: ''
+      default: ""
     },
     /**
      * Slide transition easing
@@ -446,7 +446,7 @@ export default {
      */
     goToSlide(slide) {
       const newOffset = slide * this.slideWidth;
-      if(newOffset < this.maxOffset){
+      if (newOffset < this.maxOffset) {
         this.offset = newOffset;
       }
     },
@@ -596,15 +596,17 @@ export default {
       }
     },
     itemClicked(clicked) {
-      if(this.dragged === false){
-        const item = this.slides.default.findIndex(o => o.componentInstance._uid === clicked);
+      if (this.dragged === false) {
+        const item = this.slides.default.findIndex(
+          o => o.componentInstance._uid === clicked
+        );
         this.updateParentPage(item);
       }
 
       this.dragged = false;
     },
     updateParentPage(parentPage) {
-      if(parentPage === null){
+      if (parentPage === null) {
         parentPage = Math.round(this.offset / this.slideWidth);
       }
 
@@ -640,11 +642,6 @@ export default {
         this.isTouch ? "touchstart" : "mousedown",
         this.onStart
       );
-    }
-  },
-  watch: {
-    itemClicked: item => {
-      console.log('clickedItem', item);
     }
   }
 };

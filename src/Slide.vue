@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     emitClick() {
-      if(this.$parent.isThumbNav){
+      if (this.$parent.isThumbNav) {
         this.$parent.itemClicked(this._uid);
       }
     }

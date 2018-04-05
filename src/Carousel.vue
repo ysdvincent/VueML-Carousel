@@ -78,7 +78,7 @@ export default {
       perPageThumb: 4,
       thumbNav: null,
       multiRow: false,
-      multiRowData: ''
+      multiRowData: ""
     };
   },
   mixins: [autoplay],
@@ -429,13 +429,15 @@ export default {
      * @return {Number} The number of slides
      */
     getSlideCount() {
-      const slots = (this.$slots &&
-        this.$slots.default &&
-        this.$slots.default.filter(
-          slot => slot.tag && slot.tag.indexOf("slide") > -1
-        ).length) ||
-      0;
-      this.slideCount = (this.slideRows > 1) ? Math.ceil(slots / this.slideRows): slots;
+      const slots =
+        (this.$slots &&
+          this.$slots.default &&
+          this.$slots.default.filter(
+            slot => slot.tag && slot.tag.indexOf("slide") > -1
+          ).length) ||
+        0;
+      this.slideCount =
+        this.slideRows > 1 ? Math.ceil(slots / this.slideRows) : slots;
     },
     /**
      * Set the current page to a specific value
@@ -596,37 +598,35 @@ export default {
       }
     },
     updateThumbNav(slide) {
-      if(this.thumbNavEnabled){
-        if(!slide){
+      if (this.thumbNavEnabled) {
+        if (!slide) {
           slide = Math.round(this.offset / this.slideWidth);
         }
         this.thumbNav.goToSlide(slide);
       }
     },
     createRowSlides() {
-      if(this.slideRows > 1){
+      if (this.slideRows > 1) {
         let newSlides = [];
         let key = 0;
         let curRow = 1;
         this.$slots.default.forEach((slide, i) => {
-          if(curRow === 1){
+          if (curRow === 1) {
             // Add new slide
             newSlides[key] = {
               innerHTML: slide.elm.innerHTML
             };
             curRow++;
-          }
-          else {
+          } else {
             // Add new row to current slide
-            newSlides[key]['innerHTML'] += slide.elm.innerHTML;
+            newSlides[key]["innerHTML"] += slide.elm.innerHTML;
             curRow++;
           }
 
-          if(curRow > this.slideRows){
+          if (curRow > this.slideRows) {
             key++;
             curRow = 1;
           }
-
         });
         this.multiRowData = newSlides;
         this.multiRow = true;
@@ -654,7 +654,7 @@ export default {
 
     this.thumbNav = this.$refs.thumbNav;
 
-    if(this.slideRows > 1){
+    if (this.slideRows > 1) {
       this.createRowSlides();
     }
   },
