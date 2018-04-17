@@ -1,12 +1,12 @@
 <template>
-  <div class="VueCarousel-slide" v-on:click="emitClick">
+  <div class="VueMLCarousel-slide" v-on:click="emitClick">
     <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
-  name: "slide",
+  name: "vueml-slide",
   data() {
     return {
       width: null
@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style>
-.VueCarousel-slide {
+.VueMLCarousel-slide {
   flex-basis: inherit;
   flex-grow: 0;
   flex-shrink: 0;

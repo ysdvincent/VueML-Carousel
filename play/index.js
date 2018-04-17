@@ -67,8 +67,16 @@ play("Carousel", module)
       h, containerWidth, [h(Carousel, {}, generateSlideImages(h))]
     )
   )
-  .add("3 per page", h => createContainer(
+  .add("slide peek", h => createContainer(
       h, containerWidth, [h(Carousel, { props: { perPage: 3.4 } }, generateSlideImages(h))]
+    )
+  )
+  .add("Multi-row Slides", h => createContainer(
+      h, containerWidth, [h(Carousel, { props: { slideRows: 2 } }, generateSlideImages(h))]
+    )
+  )
+  .add("3 per page", h => createContainer(
+      h, containerWidth, [h(Carousel, { props: { perPage: 3 } }, generateSlideImages(h))]
     )
   )
   .add("scroll per page", h => createContainer(
@@ -121,7 +129,7 @@ play("Carousel", module)
     }
   })
   .add("with navigation buttons", h => createContainer(
-      h, containerWidth, [h(Carousel, { props: { navigationEnabled: true, slideRows: 2 } }, generateSlideImages(h))]
+      h, containerWidth, [h(Carousel, { props: { navigationEnabled: true } }, generateSlideImages(h))]
     )
   )
   .add("with customized navigation buttons", h => createContainer(

@@ -1,7 +1,7 @@
 {
-  "name": "vue-carousel",
-  "version": "0.6.9",
-  "description": "A flexible, responsive, touch-friendly carousel for Vue.js",
+  "name": "vueml-carousel",
+  "version": "0.1.1",
+  "description": "A flexible, responsive, touch-friendly carousel for Vue.js based on vue-carousel",
   "main": "dist/vue-carousel.min.js",
   "scripts": {
     "build": "webpack --config config/webpack.min.conf.js && npm run updateDocAssets",

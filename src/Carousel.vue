@@ -1,8 +1,8 @@
 <template>
-  <div class="VueCarousel">
-    <div class="VueCarousel-wrapper" ref="VueCarousel-wrapper">
+  <div class="VueMLCarousel">
+    <div class="VueMLCarousel-wrapper" ref="VueMLCarousel-wrapper">
       <div
-        class="VueCarousel-inner"
+        class="VueMLCarousel-inner"
         v-bind:style="`
           transform: translate3d(${currentOffset}px, 0, 0);
           transition: ${!dragging ? transitionStyle : 'none'};
@@ -30,7 +30,8 @@
     <thumbnail-nav
       v-if="thumbNavEnabled"
       :slides="$slots"
-      :perPage="4"
+      :perPage="thumbNavPerPage"
+      :perPageCustom="thumbNavPerPageCustom"
       :navigationEnabled="true"
       :paginationEnabled="false"
       :scrollPerPage="false"
@@ -49,7 +50,7 @@ import MultiRowSlide from "./MultiRowSlide.vue";
 import ThumbnailNav from "./ThumbnailNav.vue";
 
 export default {
-  name: "carousel",
+  name: "vueml-carousel",
   beforeUpdate() {
     this.computeCarouselWidth();
   },
@@ -227,22 +228,40 @@ export default {
       default: 0
     },
     /**
-     *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
+     *  Stage padding option adds left and right padding style (in pixels) onto VueMLCarousel-inner.
      */
     spacePadding: {
       type: Number,
       default: 0
     },
-
+    /**
+     * Enables the thumbnail carousel below the main carousel. It also forces
+     * the main carousel to be a single item.
+     */
     thumbNavEnabled: {
       type: Boolean,
       default: false
     },
-
+    /**
+     * Sets the number of thumbnail slides per page.
+     */
+    thumbNavPerPage: {
+      type: Number,
+      default: 4
+    },
+    /**
+     * Sets the number of thumbnail slides per page for differnet viewport sizes
+     */
+    thumbNavPerPageCustom: {
+      type: Array
+    },
+    /**
+     * Sets the number of rows per slide in the
+     */
     slideRows: {
       type: Number,
       default: 1
-    }
+    },
   },
 
   watch: {
@@ -328,8 +347,7 @@ export default {
     slideWidth() {
       const width = this.carouselWidth - this.spacePadding * 2;
       const perPage = this.currentPerPage;
-
-      return width / perPage;
+      return Math.floor(width / perPage);
     },
     transitionStyle() {
       return `${this.speed / 1000}s ${this.easing} transform`;
@@ -435,8 +453,7 @@ export default {
             slot => slot.tag && slot.tag.indexOf("slide") > -1
           ).length) ||
         0;
-      this.slideCount =
-        this.slideRows > 1 ? Math.ceil(slots / this.slideRows) : slots;
+      this.slideCount = (this.slideRows > 1) ? Math.ceil(slots / this.slideRows) : slots;
     },
     /**
      * Set the current page to a specific value
@@ -492,7 +509,7 @@ export default {
         Math.abs(deltaX) >= this.minSwipeDistance
       ) {
         const width = this.scrollPerPage
-          ? this.slideWidth * this.currentPerPage
+          ? this.slideWidth * Math.floor(this.currentPerPage)
           : this.slideWidth;
         this.dragOffset = this.dragOffset + Math.sign(deltaX) * (width / 2);
       }
@@ -610,27 +627,29 @@ export default {
         let key = 0;
         let curRow = 1;
         this.$slots.default.forEach((slide, i) => {
-          if (curRow === 1) {
-            // Add new slide
-            newSlides[key] = {
-              innerHTML: slide.elm.innerHTML
-            };
-            curRow++;
-          } else {
-            // Add new row to current slide
-            newSlides[key]["innerHTML"] += slide.elm.innerHTML;
-            curRow++;
-          }
+          if(slide && slide.elm && slide.elm.innerHTML){
+            if (curRow === 1) {
+              // Add new slide
+              newSlides[key] = {
+                innerHTML: slide.elm.innerHTML
+              };
+              curRow++;
+            } else {
+              // Add new row to current slide
+              newSlides[key]["innerHTML"] += slide.elm.innerHTML;
+              curRow++;
+            }
 
-          if (curRow > this.slideRows) {
-            key++;
-            curRow = 1;
+            if (curRow > this.slideRows) {
+              key++;
+              curRow = 1;
+            }
           }
         });
         this.multiRowData = newSlides;
         this.multiRow = true;
       }
-    }
+    },
   },
   mounted() {
     if (!this.$isServer) {
@@ -641,7 +660,7 @@ export default {
 
       // setup the start event only if touch device or mousedrag activated
       if (this.isTouch || this.mouseDrag) {
-        this.$refs["VueCarousel-wrapper"].addEventListener(
+        this.$refs["VueMLCarousel-wrapper"].addEventListener(
           this.isTouch ? "touchstart" : "mousedown",
           this.onStart
         );
@@ -661,7 +680,7 @@ export default {
     if (!this.$isServer) {
       this.detachMutationObserver();
       window.removeEventListener("resize", this.getBrowserWidth);
-      this.$refs["VueCarousel-wrapper"].removeEventListener(
+      this.$refs["VueMLCarousel-wrapper"].removeEventListener(
         this.isTouch ? "touchstart" : "mousedown",
         this.onStart
       );
@@ -671,17 +690,17 @@ export default {
 </script>
 
 <style>
-.VueCarousel {
+.VueMLCarousel {
   position: relative;
 }
 
-.VueCarousel-wrapper {
+.VueMLCarousel-wrapper {
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.VueCarousel-inner {
+.VueMLCarousel-inner {
   display: flex;
   flex-direction: row;
   backface-visibility: hidden;
