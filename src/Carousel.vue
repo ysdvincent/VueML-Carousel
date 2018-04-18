@@ -261,7 +261,7 @@ export default {
     slideRows: {
       type: Number,
       default: 1
-    },
+    }
   },
 
   watch: {
@@ -316,9 +316,14 @@ export default {
      * @return {Number} The number of slides per page to display
      */
     currentPerPage() {
-      return !this.perPageCustom || this.$isServer
-        ? this.perPage
-        : this.breakpointSlidesPerPage;
+      if(this.thumbNavEnabled){
+        return 1;
+      }
+      else {
+        return !this.perPageCustom || this.$isServer
+          ? this.perPage
+          : this.breakpointSlidesPerPage;
+      }
     },
     /**
      * The horizontal distance the inner wrapper is offset while navigating.
@@ -453,7 +458,8 @@ export default {
             slot => slot.tag && slot.tag.indexOf("slide") > -1
           ).length) ||
         0;
-      this.slideCount = (this.slideRows > 1) ? Math.ceil(slots / this.slideRows) : slots;
+      this.slideCount =
+        this.slideRows > 1 ? Math.ceil(slots / this.slideRows) : slots;
     },
     /**
      * Set the current page to a specific value
@@ -627,7 +633,7 @@ export default {
         let key = 0;
         let curRow = 1;
         this.$slots.default.forEach((slide, i) => {
-          if(slide && slide.elm && slide.elm.innerHTML){
+          if (slide && slide.elm && slide.elm.innerHTML) {
             if (curRow === 1) {
               // Add new slide
               newSlides[key] = {
@@ -649,7 +655,7 @@ export default {
         this.multiRowData = newSlides;
         this.multiRow = true;
       }
-    },
+    }
   },
   mounted() {
     if (!this.$isServer) {
