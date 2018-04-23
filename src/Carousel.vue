@@ -190,11 +190,12 @@ export default {
     perPageCustom: {
       type: Array,
       validator(values) {
-        return Array.isArray(values) &&
-          values.every(pair =>
-            Array.isArray(pair)
-            && pair.every(Number.isSafeInteger)
-          );
+        return (
+          Array.isArray(values) &&
+          values.every(
+            pair => Array.isArray(pair) && pair.every(Number.isSafeInteger)
+          )
+        );
       }
     },
     /**
@@ -262,11 +263,12 @@ export default {
     thumbNavPerPageCustom: {
       type: Array,
       validator(values) {
-        return Array.isArray(values) &&
-          values.every(pair =>
-            Array.isArray(pair)
-            && pair.every(Number.isSafeInteger)
-          );
+        return (
+          Array.isArray(values) &&
+          values.every(
+            pair => Array.isArray(pair) && pair.every(Number.isSafeInteger)
+          )
+        );
       }
     },
     /**
@@ -330,10 +332,9 @@ export default {
      * @return {Number} The number of slides per page to display
      */
     currentPerPage() {
-      if(this.thumbNavEnabled){
+      if (this.thumbNavEnabled) {
         return 1;
-      }
-      else {
+      } else {
         return !this.perPageCustom || this.$isServer
           ? this.perPage
           : this.breakpointSlidesPerPage;

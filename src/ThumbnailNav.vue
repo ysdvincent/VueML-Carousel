@@ -177,11 +177,12 @@ export default {
     perPageCustom: {
       type: Array,
       validator(values) {
-        return Array.isArray(values) &&
-          values.every(pair =>
-            Array.isArray(pair)
-            && pair.every(Number.isSafeInteger)
-          );
+        return (
+          Array.isArray(values) &&
+          values.every(
+            pair => Array.isArray(pair) && pair.every(Number.isSafeInteger)
+          )
+        );
       }
     },
     /**
