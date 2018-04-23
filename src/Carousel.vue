@@ -12,8 +12,12 @@
           padding-right: ${padding}px;
         `"
       >
-        <slot name="default" v-if="!multiRow"></slot>
-        <multi-row-slide v-if="multiRow" v-for="(slide, key) in multiRowData" :slide="slide" :key="key"/>
+        <template v-if="multiRow">
+          <multi-row-slide v-for="(slide, key) in multiRowData" :slide="slide" :key="key"/>
+        </template>
+        <template v-else>
+          <slot name="default"></slot>
+        </template>
       </div>
     </div>
     <pagination
