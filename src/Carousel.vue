@@ -13,20 +13,20 @@
         `"
       >
         <slot name="default" v-if="!multiRow"></slot>
-        <multi-row-slide v-if="multiRow" v-for="(slide, key) in multiRowData" :slide="slide" :key="key"></multi-row-slide>
+        <multi-row-slide v-if="multiRow" v-for="(slide, key) in multiRowData" :slide="slide" :key="key"/>
       </div>
     </div>
     <pagination
       v-if="paginationEnabled && pageCount > 0"
       @paginationclick="goToPage($event, 'pagination')"
-    ></pagination>
+    />
     <navigation
       v-if="navigationEnabled"
       :clickTargetSize="navigationClickTargetSize"
       :nextLabel="navigationNextLabel"
       :prevLabel="navigationPrevLabel"
       @navigationclick="handleNavigation"
-    ></navigation>
+    />
     <thumbnail-nav
       v-if="thumbNavEnabled"
       :slides="$slots"
@@ -36,7 +36,7 @@
       :paginationEnabled="false"
       :scrollPerPage="false"
       ref="thumbNav"
-    ></thumbnail-nav>
+    />
   </div>
 </template>
 
@@ -188,7 +188,14 @@ export default {
      * ex. [1199, 4] means if (window <= 1199) then show 4 slides per page
      */
     perPageCustom: {
-      type: Array
+      type: Array,
+      validator(values) {
+        return Array.isArray(values) &&
+          values.every(pair =>
+            Array.isArray(pair)
+            && pair.every(Number.isSafeInteger)
+          );
+      }
     },
     /**
      * Resistance coefficient to dragging on the edge of the carousel
@@ -253,7 +260,14 @@ export default {
      * Sets the number of thumbnail slides per page for differnet viewport sizes
      */
     thumbNavPerPageCustom: {
-      type: Array
+      type: Array,
+      validator(values) {
+        return Array.isArray(values) &&
+          values.every(pair =>
+            Array.isArray(pair)
+            && pair.every(Number.isSafeInteger)
+          );
+      }
     },
     /**
      * Sets the number of rows per slide in the
