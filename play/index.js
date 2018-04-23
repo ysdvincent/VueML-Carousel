@@ -12,7 +12,14 @@ const images = [
   "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176003_1.jpg",
   "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176004_1.jpg",
   "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_1.jpg",
-  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_1.jpg"
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176006_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176005_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176003_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176004_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176002_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176001_1.jpg",
+  "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176006_1.jpg"
 ]
 
 const generateSlideImages = (createElement) => images.map((image) =>
@@ -55,6 +62,18 @@ play("Carousel", module)
       h, containerWidth, [h(Carousel, {}, generateSlideImages(h))]
     )
   )
+  .add("Slide Peek", h => createContainer(
+      h, containerWidth, [h(Carousel, { props: { perPage: 3.4 } }, generateSlideImages(h))]
+    )
+  )
+  .add("Multi-row Slides", h => createContainer(
+      h, containerWidth, [h(Carousel, { props: { slideRows: 2, navigationEnabled: true } }, generateSlideImages(h))]
+    )
+  )
+  .add("Thumbnail Navigation", h => createContainer(
+      h, containerWidth, [h(Carousel, { props: { thumbNavEnabled: true, thumbNavPerPage: 4 } }, generateSlideImages(h))]
+    )
+  )
   .add("3 per page", h => createContainer(
       h, containerWidth, [h(Carousel, { props: { perPage: 3 } }, generateSlideImages(h))]
     )
@@ -64,7 +83,7 @@ play("Carousel", module)
     )
   )
   .add("responsive", h => createContainer(
-      h, containerWidth, [h(Carousel, { props: { perPageCustom: [[480, 3], [768, 4]] } }, generateSlideImages(h))]
+      h, containerWidth, [h(Carousel, { props: { perPageCustom: [[480, 3], [768, 4]], slideRows: 2 } }, generateSlideImages(h))]
     )
   )
   .add("autoplay", h => createContainer(
@@ -174,4 +193,3 @@ play("Carousel", module)
       h, containerWidth, [h(Carousel, { props: { spacePadding: 100, perPage: 1} }, generateSlideImages(h))]
       )
   )
-

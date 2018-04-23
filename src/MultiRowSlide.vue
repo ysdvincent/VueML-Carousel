@@ -1,12 +1,10 @@
 <template>
-  <div class="VueMLCarousel-slide" v-on:click="emitClick">
-    <slot></slot>
-  </div>
+  <div class="VueMLCarousel-slide" ref="multiSlide" v-on:click="emitClick"></div>
 </template>
 
 <script>
 export default {
-  name: "vueml-slide",
+  name: "multi-row-slides",
   data() {
     return {
       width: null
@@ -22,6 +20,12 @@ export default {
   mounted() {
     if (!this.$isServer) {
       this.$el.addEventListener("dragstart", e => e.preventDefault());
+    }
+    this.$refs.multiSlide.innerHTML = this.slide.innerHTML;
+  },
+  props: {
+    slide: {
+      type: Object
     }
   }
 };
