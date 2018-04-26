@@ -1,8 +1,8 @@
 <template>
-  <div class="VueMLCarousel-ThumbNav">
-    <div :class="`VueMLCarousel-ThumbNav-wrapper ${thumbnailClass}`" ref="VueMLCarousel-ThumbNav-wrapper">
+  <div class="VueCarousel-ThumbNav">
+    <div :class="`VueCarousel-ThumbNav-wrapper ${thumbnailClass}`" ref="VueCarousel-ThumbNav-wrapper">
       <div
-        class="VueMLCarousel-ThumbNav-inner"
+        class="VueCarousel-ThumbNav-inner"
         v-bind:style="`
           transform: translate3d(${currentOffset}px, 0, 0);
           transition: ${!dragging ? transitionStyle : 'none'};
@@ -223,7 +223,7 @@ export default {
       default: 0
     },
     /*
-       *  Stage padding option adds left and right padding style (in pixels) onto VueMLCarousel-inner.
+       *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
        */
     spacePadding: {
       type: Number,
@@ -632,7 +632,7 @@ export default {
 
       // setup the start event only if touch device or mousedrag activated
       if (this.isTouch || this.mouseDrag) {
-        this.$refs["VueMLCarousel-ThumbNav-wrapper"].addEventListener(
+        this.$refs["VueCarousel-ThumbNav-wrapper"].addEventListener(
           this.isTouch ? "touchstart" : "mousedown",
           this.onStart
         );
@@ -646,7 +646,7 @@ export default {
     if (!this.$isServer) {
       this.detachMutationObserver();
       window.removeEventListener("resize", this.getBrowserWidth);
-      this.$refs["VueMLCarousel-ThumbNav-wrapper"].removeEventListener(
+      this.$refs["VueCarousel-ThumbNav-wrapper"].removeEventListener(
         this.isTouch ? "touchstart" : "mousedown",
         this.onStart
       );
@@ -656,27 +656,27 @@ export default {
 </script>
 
 <style>
-.VueMLCarousel-ThumbNav {
+.VueCarousel-ThumbNav {
   position: relative;
 }
 
-.VueMLCarousel-ThumbNav-wrapper {
+.VueCarousel-ThumbNav-wrapper {
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.VueMLCarousel-ThumbNav-inner {
+.VueCarousel-ThumbNav-inner {
   display: flex;
   flex-direction: row;
   backface-visibility: hidden;
 }
 
-.VueMLCarousel-ThumbNav .VueMLCarousel-slide {
+.VueCarousel-ThumbNav .VueCarousel-slide {
   text-align: center;
 }
 
-.VueMLCarousel-ThumbNav .VueMLCarousel-slide img {
+.VueCarousel-ThumbNav .VueCarousel-slide img {
   max-height: 150px;
   width: auto !important;
 }

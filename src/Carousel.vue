@@ -1,8 +1,8 @@
 <template>
-  <div class="VueMLCarousel">
-    <div class="VueMLCarousel-wrapper" ref="VueMLCarousel-wrapper">
+  <div class="VueCarousel">
+    <div class="VueCarousel-wrapper" ref="VueCarousel-wrapper">
       <div
-        class="VueMLCarousel-inner"
+        class="VueCarousel-inner"
         v-bind:style="`
           transform: translate3d(${currentOffset}px, 0, 0);
           transition: ${!dragging ? transitionStyle : 'none'};
@@ -240,7 +240,7 @@ export default {
       default: 0
     },
     /**
-     *  Stage padding option adds left and right padding style (in pixels) onto VueMLCarousel-inner.
+     *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
      */
     spacePadding: {
       type: Number,
@@ -685,7 +685,7 @@ export default {
 
       // setup the start event only if touch device or mousedrag activated
       if (this.isTouch || this.mouseDrag) {
-        this.$refs["VueMLCarousel-wrapper"].addEventListener(
+        this.$refs["VueCarousel-wrapper"].addEventListener(
           this.isTouch ? "touchstart" : "mousedown",
           this.onStart
         );
@@ -705,7 +705,7 @@ export default {
     if (!this.$isServer) {
       this.detachMutationObserver();
       window.removeEventListener("resize", this.getBrowserWidth);
-      this.$refs["VueMLCarousel-wrapper"].removeEventListener(
+      this.$refs["VueCarousel-wrapper"].removeEventListener(
         this.isTouch ? "touchstart" : "mousedown",
         this.onStart
       );
@@ -715,17 +715,17 @@ export default {
 </script>
 
 <style>
-.VueMLCarousel {
+.VueCarousel {
   position: relative;
 }
 
-.VueMLCarousel-wrapper {
+.VueCarousel-wrapper {
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.VueMLCarousel-inner {
+.VueCarousel-inner {
   display: flex;
   flex-direction: row;
   backface-visibility: hidden;

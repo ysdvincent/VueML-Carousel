@@ -1,5 +1,5 @@
 <template>
-  <div class="VueMLCarousel-slide" v-on:click="emitClick">
+  <div class="VueCarousel-slide" v-on:click="emitClick">
     <slot></slot>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style>
-.VueMLCarousel-slide {
+.VueCarousel-slide {
   flex-basis: inherit;
   flex-grow: 0;
   flex-shrink: 0;
