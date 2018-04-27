@@ -192,15 +192,7 @@ export default {
      * ex. [1199, 4] means if (window <= 1199) then show 4 slides per page
      */
     perPageCustom: {
-      type: Array,
-      validator(values) {
-        return (
-          Array.isArray(values) &&
-          values.every(
-            pair => Array.isArray(pair) && pair.every(Number.isSafeInteger)
-          )
-        );
-      }
+      type: Array
     },
     /**
      * Resistance coefficient to dragging on the edge of the carousel
