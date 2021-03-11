@@ -3,21 +3,31 @@
     <div class="VueCarousel-dot-container">
       <div
         class="VueCarousel-dot"
-        v-bind:class="{ 'VueCarousel-dot--active': (index === parentContainer.currentPage) }"
+        v-bind:class="{
+          'VueCarousel-dot--active': index === parentContainer.currentPage
+        }"
         v-for="(page, index) in parentContainer.pageCount"
         v-on:click="goToPage(index)"
-        :style="`
+        :style="
+          `
           margin-top: ${parentContainer.paginationPadding * 2}px;
           padding: ${parentContainer.paginationPadding}px;
-        `"
+        `
+        "
       >
         <div
           class="VueCarousel-dot-inner"
-          :style="`
+          :style="
+            `
             width: ${parentContainer.paginationSize}px;
             height: ${parentContainer.paginationSize}px;
-            background: ${(index === parentContainer.currentPage) ? parentContainer.paginationActiveColor : parentContainer.paginationColor};
-          `"
+            background: ${
+              index === parentContainer.currentPage
+                ? parentContainer.paginationActiveColor
+                : parentContainer.paginationColor
+            };
+          `
+          "
         ></div>
       </div>
     </div>

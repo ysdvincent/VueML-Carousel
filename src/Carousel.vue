@@ -3,17 +3,25 @@
     <div class="VueCarousel-wrapper" ref="VueCarousel-wrapper">
       <div
         class="VueCarousel-inner"
-        v-bind:style="`
+        v-bind:style="
+          `
           transform: translate3d(${currentOffset}px, 0, 0);
           transition: ${!dragging ? transitionStyle : 'none'};
           flex-basis: ${slideWidth}px;
           visibility: ${slideWidth ? 'visible' : 'hidden'};
           padding-left: ${padding}px;
           padding-right: ${padding}px;
-        `"
+        `
+        "
       >
         <template v-if="multiRow">
-          <multi-row-slide v-for="(slide, key) in multiRowData" :slide="slide" :key="key"/>
+          <multi-row-slide
+            v-for="(slide, key) in multiRowData"
+            :slide="slide"
+            :key="key"
+            :index="key"
+            @slideClick="slideClick"
+          />
         </template>
         <template v-else>
           <slot name="default"></slot>
@@ -111,8 +119,8 @@ export default {
       default: 8
     },
     /*
-       * Flag to toggle mouse dragging
-       */
+     * Flag to toggle mouse dragging
+     */
     mouseDrag: {
       type: Boolean,
       default: true
@@ -296,8 +304,8 @@ export default {
       const breakpointArray = this.perPageCustom;
       const width = this.browserWidth;
 
-      const breakpoints = breakpointArray.sort(
-        (a, b) => (a[0] > b[0] ? -1 : 1)
+      const breakpoints = breakpointArray.sort((a, b) =>
+        a[0] > b[0] ? -1 : 1
       );
 
       // Reduce the breakpoints to entries where the width is in range
@@ -645,15 +653,28 @@ export default {
         let curRow = 1;
         this.$slots.default.forEach((slide, i) => {
           if (slide && slide.elm && slide.elm.innerHTML) {
+            console.log("slide");
+            console.log(slide);
+            console.log(slide.data.attrs);
             if (curRow === 1) {
               // Add new slide
               newSlides[key] = {
-                innerHTML: slide.elm.innerHTML
+                // innerHTML: slide.elm.innerHTML,
+                slides: [
+                  {
+                    innerHTML: slide.elm.innerHTML,
+                    attrs: slide.data.attrs
+                  }
+                ]
               };
               curRow++;
             } else {
               // Add new row to current slide
-              newSlides[key]["innerHTML"] += slide.elm.innerHTML;
+              // newSlides[key]["innerHTML"] += slide.elm.innerHTML;
+              newSlides[key].slides.push({
+                innerHTML: slide.elm.innerHTML,
+                attrs: slide.data.attrs
+              });
               curRow++;
             }
 
@@ -666,6 +687,9 @@ export default {
         this.multiRowData = newSlides;
         this.multiRow = true;
       }
+    },
+    slideClick(attrs) {
+      this.$emit("slideClick", attrs);
     }
   },
   mounted() {

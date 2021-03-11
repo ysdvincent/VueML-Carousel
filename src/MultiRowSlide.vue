@@ -1,5 +1,11 @@
 <template>
-  <div class="VueCarousel-slide" ref="multiSlide" v-on:click="emitClick"></div>
+  <div class="VueCarousel-slide" ref="multiSlide" v-on:click="emitClick">
+    <div
+      v-for="slideObj in slide.slides"
+      v-html="slideObj.innerHTML"
+      v-on:click="slideClick(slideObj.attrs)"
+    ></div>
+  </div>
 </template>
 
 <script>
@@ -12,22 +18,32 @@ export default {
   },
   methods: {
     emitClick() {
+      console.log(`emitClick ${this.index}`);
       if (this.$parent.isThumbNav) {
         this.$parent.itemClicked(this._uid);
       }
+    },
+    slideClick(attrs) {
+      // console.log('slideClick')
+      // console.log(attrs.code)
+      this.$emit("slideClick", attrs);
     }
   },
   mounted() {
     if (!this.$isServer) {
       this.$el.addEventListener("dragstart", e => e.preventDefault());
     }
-    this.$refs.multiSlide.innerHTML = this.slide.innerHTML;
+    // this.$refs.multiSlide.innerHTML = this.slide.innerHTML;
   },
-  props: {
+  /* props: {
     slide: {
       type: Object
+    },
+    index: {
+      type: Number
     }
-  }
+  }*/
+  props: ["slide"]
 };
 </script>
 

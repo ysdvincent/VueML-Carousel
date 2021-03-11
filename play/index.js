@@ -22,13 +22,19 @@ const images = [
   "https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176006_1.jpg"
 ]
 
+
 const generateSlideImages = (createElement) => images.map((image) =>
   createElement(Slide, {}, [
     createElement(
       "img",
       {
         style: { width: "100%" },
-        attrs: { src: image }
+        attrs: {
+          src: image,
+          code:'1234',
+          'v-on:click':'test()'
+        },
+
       }
     )
   ])
@@ -58,7 +64,7 @@ const createContainer = (createElement, width, content) => createElement(
 )
 
 play("Carousel", module)
-  .add("default", h => createContainer(
+/*  .add("default", h => createContainer(
       h, containerWidth, [h(Carousel, {}, generateSlideImages(h))]
     )
   )
@@ -93,12 +99,12 @@ play("Carousel", module)
   .add("autoplay, pause on hover", h => createContainer(
       h, containerWidth, [h(Carousel, { props: { autoplay: true, autoplayHoverPause: true } }, generateSlideImages(h))]
     )
-  )
+  )*/
   .add("dynamic, add or remove slides", {
     template:
       `<div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
-        <carousel style="width: 500px;">
-          <slide v-for="slide in slideCount">
+        <carousel style="width: 500px;" :slideRows="2" :navigationEnabled="true" @slideClick="slideClick">
+          <slide v-for="slide in slideCount" :code="'1357'">
             <img style="width: 100%;" src="https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v588/171924M176006_1.jpg" />
           </slide>
         </carousel>
@@ -124,9 +130,14 @@ play("Carousel", module)
         if (this.slideCount > 1) {
           this.slideCount--
         }
+      },
+      slideClick(attrs){
+        console.log('test')
+        console.log(attrs)
       }
     }
   })
+/*
   .add("with navigation buttons", h => createContainer(
       h, containerWidth, [h(Carousel, { props: { navigationEnabled: true } }, generateSlideImages(h))]
     )
@@ -193,3 +204,4 @@ play("Carousel", module)
       h, containerWidth, [h(Carousel, { props: { spacePadding: 100, perPage: 1} }, generateSlideImages(h))]
       )
   )
+*/

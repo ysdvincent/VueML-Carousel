@@ -1,16 +1,21 @@
 <template>
   <div class="VueCarousel-ThumbNav">
-    <div :class="`VueCarousel-ThumbNav-wrapper ${thumbnailClass}`" ref="VueCarousel-ThumbNav-wrapper">
+    <div
+      :class="`VueCarousel-ThumbNav-wrapper ${thumbnailClass}`"
+      ref="VueCarousel-ThumbNav-wrapper"
+    >
       <div
         class="VueCarousel-ThumbNav-inner"
-        v-bind:style="`
+        v-bind:style="
+          `
           transform: translate3d(${currentOffset}px, 0, 0);
           transition: ${!dragging ? transitionStyle : 'none'};
           flex-basis: ${slideWidth}px;
           visibility: ${slideWidth ? 'visible' : 'hidden'};
           padding-left: ${padding}px;
           padding-right: ${padding}px;
-        `"
+        `
+        "
       >
         <slot></slot>
       </div>
@@ -94,8 +99,8 @@ export default {
       default: 8
     },
     /*
-       * Flag to toggle mouse dragging
-       */
+     * Flag to toggle mouse dragging
+     */
     mouseDrag: {
       type: Boolean,
       default: true
@@ -215,8 +220,8 @@ export default {
       default: 0
     },
     /*
-       *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
-       */
+     *  Stage padding option adds left and right padding style (in pixels) onto VueCarousel-inner.
+     */
     spacePadding: {
       type: Number,
       default: 0
@@ -254,8 +259,8 @@ export default {
       const breakpointArray = this.perPageCustom;
       const width = this.browserWidth;
 
-      const breakpoints = breakpointArray.sort(
-        (a, b) => (a[0] > b[0] ? -1 : 1)
+      const breakpoints = breakpointArray.sort((a, b) =>
+        a[0] > b[0] ? -1 : 1
       );
 
       // Reduce the breakpoints to entries where the width is in range
