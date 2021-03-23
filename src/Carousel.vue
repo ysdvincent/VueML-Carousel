@@ -90,7 +90,8 @@ export default {
       perPageThumb: 4,
       thumbNav: null,
       multiRow: false,
-      multiRowData: ""
+      multiRowData: "",
+      useDrag: false
     };
   },
   mixins: [autoplay],
@@ -501,6 +502,7 @@ export default {
      */
     /* istanbul ignore next */
     onStart(e) {
+      // console.log('start drag')
       document.addEventListener(
         this.isTouch ? "touchend" : "mouseup",
         this.onEnd,
@@ -523,6 +525,7 @@ export default {
      * @param  {Object} e The event object
      */
     onEnd(e) {
+      // console.log('end drag')
       // compute the momemtum speed
       const eventPosX = this.isTouch ? e.changedTouches[0].clientX : e.clientX;
       const deltaX = this.dragStartX - eventPosX;
@@ -539,8 +542,19 @@ export default {
         this.dragOffset = this.dragOffset + Math.sign(deltaX) * (width / 2);
       }
 
+      console.log(this.dragOffset);
+      if (this.dragOffset > 10) {
+        this.useDrag = true;
+      } else {
+        this.useDrag = false;
+      }
+
       this.offset += this.dragOffset;
       this.dragOffset = 0;
+
+      // setTimeout(()=>{
+      //   this.dragging = false;
+      // },100)
       this.dragging = false;
 
       this.render();
@@ -653,9 +667,6 @@ export default {
         let curRow = 1;
         this.$slots.default.forEach((slide, i) => {
           if (slide && slide.elm && slide.elm.innerHTML) {
-            console.log("slide");
-            console.log(slide);
-            console.log(slide.data.attrs);
             if (curRow === 1) {
               // Add new slide
               newSlides[key] = {
@@ -689,7 +700,12 @@ export default {
       }
     },
     slideClick(attrs) {
-      this.$emit("slideClick", attrs);
+      if (!this.useDrag) {
+        console.log("click");
+        this.$emit("slideClick", attrs);
+      } else {
+        console.log("dragging, prevent drag");
+      }
     }
   },
   mounted() {

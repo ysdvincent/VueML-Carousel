@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     emitClick() {
-      console.log(`emitClick ${this.index}`);
+      // console.log(`emitClick ${this.index}`);
       if (this.$parent.isThumbNav) {
         this.$parent.itemClicked(this._uid);
       }
