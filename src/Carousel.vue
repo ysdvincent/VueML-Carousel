@@ -543,10 +543,10 @@ export default {
       }
 
       console.log(this.dragOffset);
-      if (this.dragOffset > 10) {
-        this.useDrag = true;
-      } else {
+      if (this.dragOffset > -10 && this.dragOffset < 10) {
         this.useDrag = false;
+      } else {
+        this.useDrag = true;
       }
 
       this.offset += this.dragOffset;
